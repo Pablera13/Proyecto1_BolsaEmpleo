@@ -29,6 +29,7 @@ namespace Proyecto1_BolsaEmpleo.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // uno a muchos
+
             modelBuilder.Entity<Formacion>()
             .HasOne(formacion => formacion.Candidato)
             .WithMany(candidato => candidato.formaciones)

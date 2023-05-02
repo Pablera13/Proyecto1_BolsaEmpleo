@@ -46,20 +46,23 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             return CreatedAtAction("GetOfertaHabilidad", new { id = newOfertaHabilidad.OfertaId }, newOfertaHabilidad);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOfertaHabilidad(int id)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteOfertaHabilidad(int id_oferta, int id_habilidad)
         {
             if (_context.OfertaHabilidad == null)
             {
                 return NotFound();
             }
-            var ofertahabilidad = await _context.OfertaHabilidad.FindAsync(id);
-            if (ofertahabilidad == null)
+
+            OfertaHabilidad newOfertaHabilidad = new OfertaHabilidad();
+            newOfertaHabilidad = _context.OfertaHabilidad.SingleOrDefault(pc => pc.OfertaId == id_oferta && pc.HabilidadId == id_habilidad);
+
+            if (newOfertaHabilidad == null)
             {
                 return NotFound();
             }
 
-            _context.OfertaHabilidad.Remove(ofertahabilidad);
+            _context.OfertaHabilidad.Remove(newOfertaHabilidad);
             await _context.SaveChangesAsync();
 
             return NoContent();

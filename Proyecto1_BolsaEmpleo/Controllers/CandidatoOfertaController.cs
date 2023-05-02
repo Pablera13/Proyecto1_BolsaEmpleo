@@ -46,20 +46,23 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             return CreatedAtAction("GetCandidatoOferta", new { id = newCandidatoOferta.CandidatoId }, newCandidatoOferta);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCandidatoOferta(int id)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCandidatoOferta(int id_candidato, int id_oferta)
         {
             if (_context.CandidatoOferta == null)
             {
                 return NotFound();
             }
-            var candidatooferta = await _context.CandidatoOferta.FindAsync(id);
-            if (candidatooferta == null)
+
+            CandidatoOferta newCandidatoOferta = new CandidatoOferta();
+            newCandidatoOferta = _context.CandidatoOferta.SingleOrDefault(pc => pc.CandidatoId == id_candidato && pc.OfertaId == id_oferta);
+
+            if (newCandidatoOferta == null)
             {
                 return NotFound();
             }
 
-            _context.CandidatoOferta.Remove(candidatooferta);
+            _context.CandidatoOferta.Remove(newCandidatoOferta);
             await _context.SaveChangesAsync();
 
             return NoContent();
