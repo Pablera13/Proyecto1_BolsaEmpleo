@@ -11,7 +11,7 @@
         //relaciones
 
         public List<Oferta> ofertas { get; set; }
-        public List<Habilidad> habilidades { get; set; }
+  
 
 
 

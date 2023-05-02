@@ -17,6 +17,7 @@ namespace Proyecto1_BolsaEmpleo.Models
 
         //Relaciones
         public List<Formacion> formaciones { get; set; }
-        public List<Habilidad> habilidades { get; set; }
+        public List<CandidatoHabilidad> CandidatoHabilidades { get; set; }
+        public List<CandidatoOferta> CandidatoOfertas { get; set; }
     }
 }

@@ -8,6 +8,9 @@
         //relaciones
         public int EmpresaId { get; set; }
         public Empresa Empresa { get; set; }
-       
+
+        public List<OfertaHabilidad> OfertaHabilidades { get; set; }
+        public List<CandidatoOferta> CandidatoOfertas { get; set; }
+
     }
 }

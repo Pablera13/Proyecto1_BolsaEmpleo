@@ -24,8 +24,27 @@ namespace Proyecto1_BolsaEmpleo.Controllers
                 return NotFound();
             }
 
-            //List<Empresa> listaEmpresas = await _context.Empresa.Include("ofertas").ToListAsync();
-            List<Empresa> listaEmpresas = await _context.Empresa.Include(c => c.ofertas).Include(c => c.habilidades).ToListAsync();
+            List<Empresa> listaEmpresas = await _context.Empresa
+            .Include(c => c.ofertas)
+            .Select(c => new Empresa
+            {
+                Id = c.Id,
+                Nombre = c.Nombre,
+                Direccion = c.Direccion,
+                Telefono = c.Telefono,
+                 
+                ofertas = c.ofertas.Select(f => new Oferta
+                {
+                    Descripcion = f.Descripcion,
+                    OfertaHabilidades = f.OfertaHabilidades,
+                    CandidatoOfertas = f.CandidatoOfertas,
+
+                }).ToList(),
+            })
+                   .ToListAsync();
+
+
+            //reunirse con el profe para preguntarle como hacer bien el select column
 
             return listaEmpresas;
         }
@@ -81,6 +100,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         {
 
             Empresa newEmpresa = new Empresa();
+            newEmpresa.Id = empresaRequest.Id;
             newEmpresa.Nombre = empresaRequest.Nombre;
             newEmpresa.Direccion = empresaRequest.Direccion;
             newEmpresa.Telefono = empresaRequest.Telefono;

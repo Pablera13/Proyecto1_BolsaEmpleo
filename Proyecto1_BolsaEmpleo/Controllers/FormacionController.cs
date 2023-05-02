@@ -27,6 +27,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             }
 
             Formacion newFormacion = new Formacion();
+            newFormacion.Id = formacionRequest.Id;
             newFormacion.CandidatoId = formacionRequest.CandidatoId;
             newFormacion.Nombre = formacionRequest.Nombre;
             newFormacion.Años_Estudio = formacionRequest.Años_Estudio;

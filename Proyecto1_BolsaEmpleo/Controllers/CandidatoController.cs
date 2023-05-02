@@ -26,9 +26,34 @@ namespace Proyecto1_BolsaEmpleo.Controllers
                 return NotFound();
             }
 
-            //List<Candidato> listaCandidatos = await _context.Candidato.Include("formaciones").ToListAsync();
-            List<Candidato> listaCandidatos = await _context.Candidato.Include(c => c.formaciones).Include(c => c.habilidades).ToListAsync();
+            List<Candidato> listaCandidatos = await _context.Candidato
+            .Include(c => c.formaciones)
+            .Select(c => new Candidato
+             {
+                 Id = c.Id,
+                 Nombre = c.Nombre,
+                 Apellido1 = c.Apellido1,
+                 Apellido2 = c.Apellido2,
+                 Fecha_Nacimiento = c.Fecha_Nacimiento,
+                 Direccion = c.Direccion,
+                 Telefono = c.Telefono,
+                 Descripcion = c.Descripcion,
+                 CandidatoHabilidades = c.CandidatoHabilidades,
+                 CandidatoOfertas = c.CandidatoOfertas,
 
+
+                formaciones = c.formaciones.Select(f => new Formacion
+                 {
+                     Nombre = f.Nombre,
+                     Años_Estudio = f.Años_Estudio,
+                     Fecha_Culminacion = f.Fecha_Culminacion
+
+                }).ToList(),
+             })
+                   .ToListAsync();
+
+
+            //reunirse con el profe para preguntarle como hacer bien el select column
 
             return listaCandidatos;
         }
@@ -84,6 +109,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         {
 
             Candidato newCandidato = new Candidato();
+            newCandidato.Id = candidatoRequest.Id;
             newCandidato.Nombre = candidatoRequest.Nombre ;
             newCandidato.Apellido1 = candidatoRequest.Apellido1;
             newCandidato.Apellido2 = candidatoRequest.Apellido2;
@@ -126,12 +152,6 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         {
             return (_context.Candidato?.Any(e => e.Id == id)).GetValueOrDefault();
         }
-
-
-
-
-
-
 
     }
 }

@@ -25,7 +25,20 @@ namespace Proyecto1_BolsaEmpleo.Controllers
                 return NotFound();
             }
 
-            List<Oferta> listaOfertas = new List<Oferta>();
+            List<Oferta> listaOfertas = await _context.Oferta
+            //.Include(c => c.Empresa)
+            .Select(c => new Oferta
+            {
+                Id = c.Id,
+                Descripcion = c.Descripcion,
+                EmpresaId = c.EmpresaId,
+                OfertaHabilidades = c.OfertaHabilidades,
+                CandidatoOfertas = c.CandidatoOfertas,
+            })
+                   .ToListAsync();
+
+
+            //reunirse con el profe para preguntarle como hacer bien el select column
 
             return listaOfertas;
         }
@@ -39,6 +52,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             }
 
             Oferta newOferta = new Oferta();
+            newOferta.Id = ofertaRequest.Id;
             newOferta.EmpresaId = ofertaRequest.EmpresaId;
             newOferta.Descripcion = ofertaRequest.Descripcion;
 
