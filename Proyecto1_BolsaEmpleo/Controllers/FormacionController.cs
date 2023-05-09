@@ -41,14 +41,21 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFormacion(int id, Formacion formacion)
+        public async Task<IActionResult> PutFormacion(int id, FormacionVm formacionRequest)
         {
-            if (id != formacion.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(formacion).State = EntityState.Modified;
+            Formacion FormacionEdit = await _context.Formacion.FindAsync(id);
+
+            FormacionEdit.Nombre = formacionRequest.Nombre;
+            FormacionEdit.Años_Estudio = formacionRequest.Años_Estudio;
+            FormacionEdit.Fecha_Culminacion = formacionRequest.Fecha_Culminacion;
+
+            //if (id != formacion.Id)
+            //{
+            //    return BadRequest();
+            //}
+
+            _context.Entry(FormacionEdit).State = EntityState.Modified;
 
             try
             {

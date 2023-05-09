@@ -65,7 +65,9 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             {
                 return NotFound();
             }
-            var candidato = await _context.Candidato.FindAsync(id);
+              var candidato = await _context.Candidato
+             .Include(c => c.formaciones).Include(c => c.CandidatoHabilidades).Include(c => c.CandidatoOfertas)
+             .FirstOrDefaultAsync(c => c.Id == id);
 
             if (candidato == null)
             {
@@ -76,14 +78,25 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCandidato(int id, Candidato candidato)
+        public async Task<IActionResult> PutCandidato(int id, CandidatoVm candidatoRequest)
         {
-            if (id != candidato.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(candidato).State = EntityState.Modified;
+            Candidato CandidatoEdit = await _context.Candidato.FindAsync(id);
+
+            CandidatoEdit.Nombre = candidatoRequest.Nombre;
+            CandidatoEdit.Apellido1 = candidatoRequest.Apellido1;
+            CandidatoEdit.Apellido2 = candidatoRequest.Apellido2;
+            CandidatoEdit.Fecha_Nacimiento = candidatoRequest.Fecha_Nacimiento;
+            CandidatoEdit.Direccion = candidatoRequest.Direccion;
+            CandidatoEdit.Telefono = candidatoRequest.Telefono;
+            CandidatoEdit.Descripcion = candidatoRequest.Descripcion;
+
+            //if (id != candidato.Id)
+            //{
+            //    return BadRequest();
+            //}
+
+            _context.Entry(CandidatoEdit).State = EntityState.Modified;
 
             try
             {
@@ -109,7 +122,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         {
 
             Candidato newCandidato = new Candidato();
-            newCandidato.Id = candidatoRequest.Id;
+            newCandidato.Id = candidatoRequest.Id; //Si se usa SQL server, no hay que llenar id en el swagger
             newCandidato.Nombre = candidatoRequest.Nombre ;
             newCandidato.Apellido1 = candidatoRequest.Apellido1;
             newCandidato.Apellido2 = candidatoRequest.Apellido2;

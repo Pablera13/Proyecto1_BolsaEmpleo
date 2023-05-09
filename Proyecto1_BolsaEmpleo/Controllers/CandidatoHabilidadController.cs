@@ -17,16 +17,30 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CandidatoHabilidad>>> GetCandidatoHabilidad()
+        public async Task<ActionResult<IEnumerable<CandidatoHabilidadVm>>> GetCandidatoHabilidad()
         {
             if (_context.CandidatoHabilidad == null)
             {
                 return NotFound();
             }
 
+            //List<CandidatoHabilidad> listaCandidatoHabilidad = await _context.CandidatoHabilidad.ToListAsync();
+
+            //return listaCandidatoHabilidad;
+
             List<CandidatoHabilidad> listaCandidatoHabilidad = await _context.CandidatoHabilidad.ToListAsync();
 
-            return listaCandidatoHabilidad;
+            List<CandidatoHabilidadVm> listaHabilidadVm = new List<CandidatoHabilidadVm>();
+
+            foreach (CandidatoHabilidad candidatoHabilidad in listaCandidatoHabilidad)
+            {
+                CandidatoHabilidadVm newCandidatoHabilidadVm = new CandidatoHabilidadVm();
+                newCandidatoHabilidadVm.HabilidadId = candidatoHabilidad.HabilidadId;
+                newCandidatoHabilidadVm.CandidatoId = candidatoHabilidad.CandidatoId;
+                listaHabilidadVm.Add(newCandidatoHabilidadVm);
+            }
+
+            return listaHabilidadVm;
         }
 
         [HttpPost]

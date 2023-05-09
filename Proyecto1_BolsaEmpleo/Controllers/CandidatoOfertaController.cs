@@ -17,16 +17,30 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CandidatoOferta>>> GetCandidatoOferta()
+        public async Task<ActionResult<IEnumerable<CandidatoOfertaVm>>> GetCandidatoOferta()
         {
             if (_context.CandidatoOferta == null)
             {
                 return NotFound();
             }
 
+            //List<CandidatoOferta> listaCandidatoOferta = await _context.CandidatoOferta.ToListAsync();
+
+            //return listaCandidatoOferta;
+
             List<CandidatoOferta> listaCandidatoOferta = await _context.CandidatoOferta.ToListAsync();
 
-            return listaCandidatoOferta;
+            List<CandidatoOfertaVm> listaCandidatoOfertaVm = new List<CandidatoOfertaVm>();
+
+            foreach (CandidatoOferta candidatoOferta in listaCandidatoOferta)
+            {
+                CandidatoOfertaVm newCandidatoOfertaVm = new CandidatoOfertaVm();
+                newCandidatoOfertaVm.CandidatoId = candidatoOferta.CandidatoId;
+                newCandidatoOfertaVm.OfertaId = candidatoOferta.OfertaId;
+                listaCandidatoOfertaVm.Add(newCandidatoOfertaVm);
+            }
+
+            return listaCandidatoOfertaVm;
         }
 
         [HttpPost]

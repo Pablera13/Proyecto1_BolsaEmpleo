@@ -56,7 +56,11 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             {
                 return NotFound();
             }
-            var empresa = await _context.Empresa.FindAsync(id);
+
+            //var empresa = await _context.Empresa.FindAsync(id);
+            var empresa = await _context.Empresa
+             .Include(c => c.ofertas)
+             .FirstOrDefaultAsync(c => c.Id == id);
 
             if (empresa == null)
             {
@@ -67,14 +71,21 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmpresa(int id, Empresa empresa)
+        public async Task<IActionResult> PutEmpresa(int id, EmpresaVm empresaRequest)
         {
-            if (id != empresa.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(empresa).State = EntityState.Modified;
+            Empresa EmpresaEdit = await _context.Empresa.FindAsync(id);
+
+            EmpresaEdit.Nombre = empresaRequest.Nombre;
+            EmpresaEdit.Direccion = empresaRequest.Direccion;
+            EmpresaEdit.Telefono = empresaRequest.Telefono;
+
+            //if (id != empresa.Id)
+            //{
+            //    return BadRequest();
+            //}
+
+            _context.Entry(EmpresaEdit).State = EntityState.Modified;
 
             try
             {

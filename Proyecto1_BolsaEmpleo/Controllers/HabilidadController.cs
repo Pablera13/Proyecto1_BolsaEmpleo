@@ -20,7 +20,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Habilidad>>> GetHabilidad()
+        public async Task<ActionResult<IEnumerable<HabilidadVm>>> GetHabilidad()
         {
             if (_context.Habilidad == null)
             {
@@ -29,7 +29,18 @@ namespace Proyecto1_BolsaEmpleo.Controllers
 
             List<Habilidad> listaHabilidad = await _context.Habilidad.ToListAsync();
 
-            return listaHabilidad;
+            List<HabilidadVm> listaHabilidadVm = new List<HabilidadVm>();
+
+            foreach (Habilidad habilidad in listaHabilidad)
+            {
+                HabilidadVm newHabilidadVm = new HabilidadVm();
+                newHabilidadVm.Id = habilidad.Id;
+                newHabilidadVm.Nombre = habilidad.Nombre;
+                listaHabilidadVm.Add(newHabilidadVm);
+            }
+
+            return listaHabilidadVm;
+
         }
 
         [HttpPost]
@@ -51,14 +62,19 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHabilidad(int id, Habilidad habilidad)
+        public async Task<IActionResult> PutHabilidad(int id, HabilidadVm habilidadRequest)
         {
-            if (id != habilidad.Id)
-            {
-                return BadRequest();
-            }
+            Habilidad HabilidadEdit = await _context.Habilidad.FindAsync(id);
 
-            _context.Entry(habilidad).State = EntityState.Modified;
+            HabilidadEdit.Nombre = habilidadRequest.Nombre;
+
+
+            //if (id != habilidad.Id)
+            //{
+            //    return BadRequest();
+            //}
+
+            _context.Entry(HabilidadEdit).State = EntityState.Modified;
 
             try
             {

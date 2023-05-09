@@ -64,14 +64,19 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOferta(int id, Oferta oferta)
+        public async Task<IActionResult> PutOferta(int id, OfertaVm ofertaRequest)
         {
-            if (id != oferta.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(oferta).State = EntityState.Modified;
+            Oferta OfertaEdit = await _context.Oferta.FindAsync(id);
+
+            OfertaEdit.Descripcion = ofertaRequest.Descripcion;
+
+            //if (id != oferta.Id)
+            //{
+            //    return BadRequest();
+            //}
+
+            _context.Entry(OfertaEdit).State = EntityState.Modified;
 
             try
             {
