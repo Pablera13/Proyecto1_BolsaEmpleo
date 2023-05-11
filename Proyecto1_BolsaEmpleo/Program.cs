@@ -1,16 +1,18 @@
 
+using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
-using Proyecto1_BolsaEmpleo.Data;
+using DataAccess;
+using Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDataAccess(builder.Configuration);
+builder.Services.AddServices(builder.Configuration);
 
 //Para SQL server
 builder.Services.AddDbContext<MyApiContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("MyApiContext") ?? throw new InvalidOperationException("Connection string 'MyApiContext' not found.")));
-
-//Para MySQL
-//builder.Services.AddDbContext<MyApiContext>(options =>
-//options.UseMySQL(builder.Configuration.GetConnectionString("MyApiContext_MySql") ?? throw new InvalidOperationException("Connection string 'MyApiContext' not found.")));
 
 //BD en memoria
 //builder.Services.AddDbContext<MyApiContext>(options =>

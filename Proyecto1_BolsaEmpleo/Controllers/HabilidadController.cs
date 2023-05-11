@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess.Models;
+using DataAccess.RequestObjects;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Proyecto1_BolsaEmpleo.Data;
-using Proyecto1_BolsaEmpleo.Models;
-using Proyecto1_BolsaEmpleo.RequestObjects;
+using Services.IServices;
+using Services.Services;
 
 namespace Proyecto1_BolsaEmpleo.Controllers
 {
@@ -12,110 +13,70 @@ namespace Proyecto1_BolsaEmpleo.Controllers
     public class HabilidadController : ControllerBase
     {
 
-        private readonly MyApiContext _context;
+        private readonly IHabilidadService _habilidadService;
 
-        public HabilidadController(MyApiContext context)
+        public HabilidadController(IHabilidadService habilidadService)
         {
-            _context = context;
+            _habilidadService = habilidadService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HabilidadVm>>> GetHabilidad()
         {
-            if (_context.Habilidad == null)
+            List<HabilidadVm> listHabilidad = await _habilidadService.GetAll();
+
+            if (listHabilidad == null)
             {
                 return NotFound();
             }
 
-            List<Habilidad> listaHabilidad = await _context.Habilidad.ToListAsync();
-
-            List<HabilidadVm> listaHabilidadVm = new List<HabilidadVm>();
-
-            foreach (Habilidad habilidad in listaHabilidad)
-            {
-                HabilidadVm newHabilidadVm = new HabilidadVm();
-                newHabilidadVm.Id = habilidad.Id;
-                newHabilidadVm.Nombre = habilidad.Nombre;
-                listaHabilidadVm.Add(newHabilidadVm);
-            }
-
-            return listaHabilidadVm;
-
+            return Ok(listHabilidad);
         }
 
         [HttpPost]
         public async Task<ActionResult<Habilidad>> PostHabilidad(HabilidadVm habilidadRequest)
         {
-            if (_context.Habilidad == null)
+            if (habilidadRequest == null)
             {
-                return Problem("Entity set 'MyApiContext.Habilidad'  is null.");
+                return BadRequest();
             }
 
-            Habilidad newHabilidad = new Habilidad();
-            newHabilidad.Id = habilidadRequest.Id;
-            newHabilidad.Nombre = habilidadRequest.Nombre;
-         
-            _context.Habilidad.Add(newHabilidad);
-            await _context.SaveChangesAsync();
+            Habilidad newHabilidad = await _habilidadService.Create(habilidadRequest);
 
-            return CreatedAtAction("PostHabilidad", new { id = newHabilidad.Id });
+            return CreatedAtAction("GetHabilidad", new { id = newHabilidad.Id });
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutHabilidad(int id, HabilidadVm habilidadRequest)
         {
-            Habilidad HabilidadEdit = await _context.Habilidad.FindAsync(id);
-
-            HabilidadEdit.Nombre = habilidadRequest.Nombre;
-
-
-            //if (id != habilidad.Id)
-            //{
-            //    return BadRequest();
-            //}
-
-            _context.Entry(HabilidadEdit).State = EntityState.Modified;
-
-            try
+            if (habilidadRequest == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!HabilidadExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
 
+            var habilidad = await _habilidadService.GetById(id);
+
+            if (habilidad == null)
+            {
+                return NotFound();
+            }
+
+            await _habilidadService.Update(id, habilidadRequest);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHabilidad(int id)
         {
-            if (_context.Habilidad == null)
-            {
-                return NotFound();
-            }
-            var habilidad = await _context.Habilidad.FindAsync(id);
+            var habilidad = await _habilidadService.GetById(id);
             if (habilidad == null)
             {
                 return NotFound();
             }
 
-            _context.Habilidad.Remove(habilidad);
-            await _context.SaveChangesAsync();
-
+            await _habilidadService.Delete(id);
             return NoContent();
         }
-        private bool HabilidadExists(int id)
-        {
-            return (_context.Habilidad?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        
     }
 }
