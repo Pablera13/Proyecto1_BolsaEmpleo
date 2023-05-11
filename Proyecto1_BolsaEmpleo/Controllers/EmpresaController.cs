@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess.Models;
+using DataAccess.RequestObjects;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Proyecto1_BolsaEmpleo.Data;
-using Proyecto1_BolsaEmpleo.Models;
-using Proyecto1_BolsaEmpleo.RequestObjects;
+using Services.IServices;
+using Services.Services;
 
 namespace Proyecto1_BolsaEmpleo.Controllers
 {
@@ -10,99 +11,55 @@ namespace Proyecto1_BolsaEmpleo.Controllers
     [ApiController]
     public class EmpresaController : ControllerBase
     {
-        private readonly MyApiContext _context;
-        public EmpresaController(MyApiContext context)
+        private readonly IEmpresaService _empresaService;
+
+        public EmpresaController(IEmpresaService empresaService)
         {
-            _context = context;
+            _empresaService = empresaService;
         }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Empresa>>> GetEmpresa()
         {
-            if (_context.Empresa == null)
+            List<Empresa> listEmpresa = await _empresaService.GetAll();
+
+            if (listEmpresa == null)
             {
                 return NotFound();
             }
 
-            List<Empresa> listaEmpresas = await _context.Empresa
-            .Include(c => c.ofertas)
-            .Select(c => new Empresa
-            {
-                Id = c.Id,
-                Nombre = c.Nombre,
-                Direccion = c.Direccion,
-                Telefono = c.Telefono,
-                 
-                ofertas = c.ofertas.Select(f => new Oferta
-                {
-                    Descripcion = f.Descripcion,
-                    OfertaHabilidades = f.OfertaHabilidades,
-                    CandidatoOfertas = f.CandidatoOfertas,
-
-                }).ToList(),
-            })
-                   .ToListAsync();
-
-
-            //reunirse con el profe para preguntarle como hacer bien el select column
-
-            return listaEmpresas;
+            return Ok(listEmpresa);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Empresa>> GetEmpresa(int id)
         {
-            if (_context.Empresa == null)
-            {
-                return NotFound();
-            }
-
-            //var empresa = await _context.Empresa.FindAsync(id);
-            var empresa = await _context.Empresa
-             .Include(c => c.ofertas)
-             .FirstOrDefaultAsync(c => c.Id == id);
-
+            var empresa = await _empresaService.GetById(id);
             if (empresa == null)
             {
                 return NotFound();
             }
 
-            return empresa;
+            return Ok(empresa);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmpresa(int id, EmpresaVm empresaRequest)
         {
-
-            Empresa EmpresaEdit = await _context.Empresa.FindAsync(id);
-
-            EmpresaEdit.Nombre = empresaRequest.Nombre;
-            EmpresaEdit.Direccion = empresaRequest.Direccion;
-            EmpresaEdit.Telefono = empresaRequest.Telefono;
-
-            //if (id != empresa.Id)
-            //{
-            //    return BadRequest();
-            //}
-
-            _context.Entry(EmpresaEdit).State = EntityState.Modified;
-
-            try
+            if (empresaRequest == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmpresaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
 
+            var candidato = await _empresaService.GetById(id);
+
+            if (candidato == null)
+            {
+                return NotFound();
+            }
+
+            await _empresaService.Update(id, empresaRequest);
             return NoContent();
         }
 
@@ -110,19 +67,12 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         public async Task<ActionResult<Empresa>> PostAuthor(EmpresaVm empresaRequest)
         {
 
-            Empresa newEmpresa = new Empresa();
-            newEmpresa.Id = empresaRequest.Id;
-            newEmpresa.Nombre = empresaRequest.Nombre;
-            newEmpresa.Direccion = empresaRequest.Direccion;
-            newEmpresa.Telefono = empresaRequest.Telefono;
-
-
-            if (_context.Empresa == null)
+            if (empresaRequest == null)
             {
-                return Problem("Entity set 'MyApiContext.Empresa'  is null.");
+                return BadRequest();
             }
-            _context.Empresa.Add(newEmpresa);
-            await _context.SaveChangesAsync();
+
+            Empresa newEmpresa = await _empresaService.Create(empresaRequest);
 
             return CreatedAtAction("GetEmpresa", new { id = newEmpresa.Id }, newEmpresa);
         }
@@ -130,26 +80,16 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmpresa(int id)
         {
-            if (_context.Empresa == null)
-            {
-                return NotFound();
-            }
-            var empresa = await _context.Empresa.FindAsync(id);
+            var empresa = await _empresaService.GetById(id);
             if (empresa == null)
             {
                 return NotFound();
             }
 
-            _context.Empresa.Remove(empresa);
-            await _context.SaveChangesAsync();
-
+            await _empresaService.Delete(id);
             return NoContent();
         }
 
-        private bool EmpresaExists(int id)
-        {
-            return (_context.Empresa?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
 
     }
 }

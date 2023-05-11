@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess.Models;
+using DataAccess.RequestObjects;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Proyecto1_BolsaEmpleo.Data;
-using Proyecto1_BolsaEmpleo.Models;
-using Proyecto1_BolsaEmpleo.RequestObjects;
+using Services.IServices;
+using Services.Services;
 
 namespace Proyecto1_BolsaEmpleo.Controllers
 {
@@ -11,31 +12,22 @@ namespace Proyecto1_BolsaEmpleo.Controllers
     [ApiController]
     public class FormacionController : ControllerBase
     {
-        private readonly MyApiContext _context;
+        private readonly IFormacionService _formacionService;
 
-        public FormacionController(MyApiContext context)
+        public FormacionController(IFormacionService formacionServiceService)
         {
-            _context = context;
+            _formacionService = formacionServiceService;
         }
 
         [HttpPost]
         public async Task<ActionResult<Formacion>> PostFormacion(FormacionVm formacionRequest)
         {
-            if (_context.Formacion == null)
+            if (formacionRequest == null)
             {
-                return Problem("Entity set 'MyApiContext.Formacion'  is null.");
+                return BadRequest();
             }
 
-            Formacion newFormacion = new Formacion();
-            newFormacion.Id = formacionRequest.Id;
-            newFormacion.CandidatoId = formacionRequest.CandidatoId;
-            newFormacion.Nombre = formacionRequest.Nombre;
-            newFormacion.Años_Estudio = formacionRequest.Años_Estudio;
-            newFormacion.Fecha_Culminacion = formacionRequest.Fecha_Culminacion;
-
-
-            _context.Formacion.Add(newFormacion);
-            await _context.SaveChangesAsync();
+            Formacion newFormacion = await _formacionService.Create(formacionRequest);
 
             return CreatedAtAction("PostFormacion", new { id = newFormacion.Id });
         }
@@ -43,69 +35,34 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFormacion(int id, FormacionVm formacionRequest)
         {
-
-            Formacion FormacionEdit = await _context.Formacion.FindAsync(id);
-
-            FormacionEdit.Nombre = formacionRequest.Nombre;
-            FormacionEdit.Años_Estudio = formacionRequest.Años_Estudio;
-            FormacionEdit.Fecha_Culminacion = formacionRequest.Fecha_Culminacion;
-
-            //if (id != formacion.Id)
-            //{
-            //    return BadRequest();
-            //}
-
-            _context.Entry(FormacionEdit).State = EntityState.Modified;
-
-            try
+            if (formacionRequest == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FormacionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
 
+            var formacion = await _formacionService.GetById(id);
+
+            if (formacion == null)
+            {
+                return NotFound();
+            }
+
+            await _formacionService.Update(id, formacionRequest);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFormacion(int id)
         {
-            if (_context.Formacion == null)
-            {
-                return NotFound();
-            }
-            var formacion = await _context.Formacion.FindAsync(id);
+            var formacion = await _formacionService.GetById(id);
             if (formacion == null)
             {
                 return NotFound();
             }
 
-            _context.Formacion.Remove(formacion);
-            await _context.SaveChangesAsync();
-
+            await _formacionService.Delete(id);
             return NoContent();
         }
-
-        private bool FormacionExists(int id)
-        {
-            return (_context.Formacion?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
-
-
-
-
-
-
-
 
     }
 }
