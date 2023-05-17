@@ -1,5 +1,6 @@
 ﻿using DataAccess.Models;
 using DataAccess.RequestObjects;
+using DataAccess.Response_Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,10 @@ namespace Services.IServices
 {
     public interface ICandidatoService
     {
-        public Task<List<Candidato>> GetAll();
+        public Task<List<CandidatoVmGET>> GetAll();
 
         public Task<Candidato> GetById(int id);
+        public Task<List<CandidatoVmGET>> Ver_potenciales_candidatos(int id);
 
         public Task<Candidato> Create(CandidatoVm candidatoRequest);
 

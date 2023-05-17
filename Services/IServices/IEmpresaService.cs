@@ -1,5 +1,6 @@
 ﻿using DataAccess.Models;
 using DataAccess.RequestObjects;
+using DataAccess.Response_Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Services.IServices
 {
     public interface IEmpresaService
     {
-        public Task<List<Empresa>> GetAll();
+        public Task<List<EmpresaVmGET>> GetAll();
 
         public Task<Empresa> GetById(int id);
 

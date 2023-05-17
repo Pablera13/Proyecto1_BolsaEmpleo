@@ -1,5 +1,6 @@
 ﻿using DataAccess.Models;
 using DataAccess.RequestObjects;
+using DataAccess.Response_Objects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
@@ -21,7 +22,32 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Oferta>>> GetOferta()
         {
-            List<Oferta> listOferta = await _ofertaService.GetAll();
+            List<OfertaVmGET> listOferta = await _ofertaService.GetAll();
+
+            if (listOferta == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(listOferta);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Oferta>> GetOferta(int id)
+        {
+            var oferta = await _ofertaService.GetById(id);
+            if (oferta == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(oferta);
+        }
+
+        [HttpPatch]
+        public async Task<ActionResult<IEnumerable<Oferta>>> Ver_potenciales_ofertas(int id_candidato)
+        {
+            List<OfertaVmGET> listOferta = await _ofertaService.Ver_potenciales_ofertas(id_candidato);
 
             if (listOferta == null)
             {

@@ -1,4 +1,7 @@
-﻿namespace DataAccess.Models
+﻿using DataAccess.RequestObjects;
+using DataAccess.Response_Objects;
+
+namespace DataAccess.Models
 {
     public class Oferta
     {
@@ -11,6 +14,12 @@
 
         public List<OfertaHabilidad> OfertaHabilidades { get; set; }
         public List<CandidatoOferta> CandidatoOfertas { get; set; }
+
+        public Oferta()
+        {
+            OfertaHabilidades = new List<OfertaHabilidad>();
+
+        }
 
     }
 }

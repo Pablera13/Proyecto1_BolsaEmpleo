@@ -12,12 +12,5 @@
 
         public List<Oferta> ofertas { get; set; }
   
-
-
-
-
-
-
-
     }
 }

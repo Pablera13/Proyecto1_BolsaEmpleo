@@ -1,6 +1,7 @@
 ﻿using DataAccess.Data;
 using DataAccess.Models;
 using DataAccess.RequestObjects;
+using DataAccess.Response_Objects;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
 using System;
@@ -19,32 +20,38 @@ namespace Services.Services
             _context = context;
         }
 
-        public async Task<List<Empresa>> GetAll()
+        public async Task<List<EmpresaVmGET>> GetAll()
         {
-         
-            List<Empresa> listaEmpresas = await _context.Empresa
-            .Include(c => c.ofertas)
-            .Select(c => new Empresa
+            List<Empresa> listaEmpresa = await _context.Empresa
+           .Include(o => o.ofertas)
+           .ToListAsync();
+
+            List<EmpresaVmGET> listaEmpresaVmGET = new List<EmpresaVmGET>();
+
+            foreach (Empresa empresa in listaEmpresa)
             {
-                Id = c.Id,
-                Nombre = c.Nombre,
-                Direccion = c.Direccion,
-                Telefono = c.Telefono,
+                EmpresaVmGET newEmpresa = new EmpresaVmGET();
 
-                ofertas = c.ofertas.Select(f => new Oferta
+                newEmpresa.Id = empresa.Id;
+                newEmpresa.Nombre = empresa.Nombre;
+                newEmpresa.Direccion = empresa.Direccion;
+                newEmpresa.Telefono = empresa.Telefono;
+
+                foreach (Oferta oferta in empresa.ofertas)
                 {
-                    Descripcion = f.Descripcion,
-                    OfertaHabilidades = f.OfertaHabilidades,
-                    CandidatoOfertas = f.CandidatoOfertas,
+                    OfertaVm newOferta = new OfertaVm();
+                    newOferta.Id = oferta.Id;
+                    newOferta.Descripcion = oferta.Descripcion;
+                    newOferta.EmpresaId = newEmpresa.Id;
 
-                }).ToList(),
-            })
-                   .ToListAsync();
+                    newEmpresa.Ofertas.Add(newOferta);                        
 
+                }
 
-            //reunirse con el profe para preguntarle como hacer bien el select column
+                listaEmpresaVmGET.Add(newEmpresa);
+            }
 
-            return listaEmpresas;
+            return listaEmpresaVmGET;
         }
 
         public async Task<Empresa> GetById(int id)

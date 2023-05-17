@@ -1,6 +1,7 @@
 ﻿using DataAccess.Data;
 using DataAccess.Models;
 using DataAccess.RequestObjects;
+using DataAccess.Response_Objects;
 using Microsoft.EntityFrameworkCore;
 
 using Services.IServices;
@@ -21,38 +22,71 @@ namespace Services.Services
             _context = context;
         }
 
-        public async Task<List<Candidato>> GetAll()
+        public async Task<List<CandidatoVmGET>> GetAll()
         {
-            List<Candidato> listaCandidatos = await _context.Candidato
-            .Include(c => c.formaciones)
-            .Select(c => new Candidato
+            List<Candidato> listaCandidato = await _context.Candidato
+           .Include(o => o.formaciones)
+           .Include(o => o.CandidatoHabilidades)
+           .Include(o => o.CandidatoOfertas)
+           .ToListAsync();
+
+            List<CandidatoVmGET> listaCandidatoVmGET = new List<CandidatoVmGET>();
+
+            foreach (Candidato candidato in listaCandidato)
             {
-                Id = c.Id,
-                Nombre = c.Nombre,
-                Apellido1 = c.Apellido1,
-                Apellido2 = c.Apellido2,
-                Fecha_Nacimiento = c.Fecha_Nacimiento,
-                Direccion = c.Direccion,
-                Telefono = c.Telefono,
-                Descripcion = c.Descripcion,
-                CandidatoHabilidades = c.CandidatoHabilidades,
-                CandidatoOfertas = c.CandidatoOfertas,
+                CandidatoVmGET newCandidato = new CandidatoVmGET();
+                newCandidato.Id = candidato.Id;
+                newCandidato.Nombre = candidato.Nombre;
+                newCandidato.Apellido1 = candidato.Apellido1;
+                newCandidato.Apellido2 = candidato.Apellido2;
+                newCandidato.Fecha_Nacimiento = candidato.Fecha_Nacimiento;
+                newCandidato.Direccion = candidato.Direccion;
+                newCandidato.Telefono = candidato.Telefono;
+                newCandidato.Descripcion = candidato.Descripcion;
 
-
-                formaciones = c.formaciones.Select(f => new Formacion
+                foreach (Formacion formacion in candidato.formaciones)
                 {
-                    Nombre = f.Nombre,
-                    Años_Estudio = f.Años_Estudio,
-                    Fecha_Culminacion = f.Fecha_Culminacion
+                    FormacionVmGET newFormacion = new FormacionVmGET();
+                    newFormacion.Nombre = formacion.Nombre;
+                    newFormacion.Años_Estudio = formacion.Años_Estudio;
+                    newFormacion.Fecha_Culminacion = formacion.Fecha_Culminacion;
 
-                }).ToList(),
-            })
-                   .ToListAsync();
+                    newCandidato.Formaciones.Add(newFormacion);
 
+                }
 
-            //reunirse con el profe para preguntarle como hacer bien el select column
+                foreach (CandidatoHabilidad candidatoHabilidad in candidato.CandidatoHabilidades)
+                {
+                    CandidatoHabilidadVmGET newCandidatoHabilidad = new CandidatoHabilidadVmGET();
 
-            return listaCandidatos;
+                    Habilidad habilidad = await _context.Habilidad
+                    .FirstOrDefaultAsync(c => c.Id == candidatoHabilidad.HabilidadId);
+
+                    newCandidatoHabilidad.Nombre = habilidad.Nombre;
+
+                    newCandidato.Habilidades.Add(newCandidatoHabilidad);
+
+                }
+
+                foreach (CandidatoOferta candidatoOferta in candidato.CandidatoOfertas)
+                {
+                    CandidatoOfertaVmGET newCandidatoOferta = new CandidatoOfertaVmGET();
+                    newCandidatoOferta.OfertaId = candidatoOferta.OfertaId;
+
+                    Oferta oferta = await _context.Oferta
+                    .FirstOrDefaultAsync(c => c.Id == candidatoOferta.OfertaId);
+
+                    newCandidatoOferta.Descripcion = oferta.Descripcion;
+
+                    newCandidato.Ofertas.Add(newCandidatoOferta);
+
+                }
+
+                listaCandidatoVmGET.Add(newCandidato);
+            }
+
+            return listaCandidatoVmGET;
+
         }
 
         public async Task<Candidato> GetById(int id)
@@ -62,6 +96,86 @@ namespace Services.Services
            .FirstOrDefaultAsync(c => c.Id == id);
 
             return candidato;
+        }
+
+        public async Task<List<CandidatoVmGET>> Ver_potenciales_candidatos(int id_oferta)
+        {
+
+            var oferta = await _context.Oferta
+           .Include(c => c.OfertaHabilidades).FirstOrDefaultAsync(c => c.Id == id_oferta);
+
+            var habilidades = oferta.OfertaHabilidades.Select(ch => ch.HabilidadId).ToArray();
+
+            List<Candidato> listaCandidato = await _context.Candidato
+           .Include(o => o.formaciones)
+           .Include(o => o.CandidatoHabilidades)
+           .Include(o => o.CandidatoOfertas)
+           
+           .ToListAsync();
+
+            List<CandidatoVmGET> listaCandidatoVm = new List<CandidatoVmGET>();
+
+            foreach (var habilidadId in habilidades)
+            {
+                foreach (Candidato candidato in listaCandidato)
+                {
+                    CandidatoVmGET newCandidatoVmGET = new CandidatoVmGET();
+
+                    newCandidatoVmGET.Id = candidato.Id;
+                    newCandidatoVmGET.Nombre = candidato.Nombre;
+                    newCandidatoVmGET.Apellido1 = candidato.Apellido1;
+                    newCandidatoVmGET.Apellido2 = candidato.Apellido2;
+                    newCandidatoVmGET.Fecha_Nacimiento = candidato.Fecha_Nacimiento;
+                    newCandidatoVmGET.Direccion = candidato.Direccion;
+                    newCandidatoVmGET.Telefono = candidato.Telefono;
+                    newCandidatoVmGET.Descripcion = candidato.Descripcion;
+                  
+                    foreach (Formacion formacion in candidato.formaciones)
+                    {
+                        FormacionVmGET newFormacionVmGET = new FormacionVmGET();
+
+                        newFormacionVmGET.Nombre = formacion.Nombre;
+                        newFormacionVmGET.Años_Estudio = formacion.Años_Estudio;
+                        newFormacionVmGET.Fecha_Culminacion = formacion.Fecha_Culminacion;
+
+                        newCandidatoVmGET.Formaciones.Add(newFormacionVmGET);
+
+                        foreach (CandidatoHabilidad candidatoHabilidad in candidato.CandidatoHabilidades)
+                        {
+                            CandidatoHabilidadVmGET newCandidatoHabilidadVmGET = new CandidatoHabilidadVmGET();
+
+                            Habilidad habilidad = await _context.Habilidad
+                            .FirstOrDefaultAsync(c => c.Id == candidatoHabilidad.HabilidadId);
+
+                            newCandidatoHabilidadVmGET.Nombre = habilidad.Nombre;
+
+                            newCandidatoVmGET.Habilidades.Add(newCandidatoHabilidadVmGET);
+
+                            foreach (CandidatoOferta candidatoOferta in candidato.CandidatoOfertas)
+                            {
+                                CandidatoOfertaVmGET newCandidatoOfertaVmGET = new CandidatoOfertaVmGET();
+
+                                Oferta oferta2 = await _context.Oferta
+                                .FirstOrDefaultAsync(c => c.Id == candidatoOferta.OfertaId);
+
+                                newCandidatoOfertaVmGET.OfertaId = oferta2.Id;
+                                newCandidatoOfertaVmGET.Descripcion = oferta2.Descripcion;
+
+                                newCandidatoVmGET.Ofertas.Add(newCandidatoOfertaVmGET);
+
+                                if (candidatoHabilidad.HabilidadId == habilidadId)
+                                {
+                                    listaCandidatoVm.Add(newCandidatoVmGET);
+                                }
+
+                            }
+
+                        }
+
+                     }
+                }
+            }
+            return listaCandidatoVm;
         }
 
         public async Task<Candidato> Create(CandidatoVm candidatoRequest)

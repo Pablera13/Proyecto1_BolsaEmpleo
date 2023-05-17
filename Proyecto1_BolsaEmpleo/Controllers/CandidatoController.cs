@@ -1,5 +1,6 @@
 ﻿using DataAccess.Models;
 using DataAccess.RequestObjects;
+using DataAccess.Response_Objects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
@@ -22,7 +23,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Candidato>>> GetAll()
         {
-            List<Candidato> listCandidato = await _candidatoService.GetAll();
+            List<CandidatoVmGET> listCandidato = await _candidatoService.GetAll();
 
             if (listCandidato == null)
             {
@@ -42,6 +43,19 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             }
 
             return Ok(candidato);
+        }
+
+        [HttpPatch]
+        public async Task<ActionResult<IEnumerable<Candidato>>> Ver_potenciales_candidatos(int id_oferta)
+        {
+            List<CandidatoVmGET> listCandidato = await _candidatoService.Ver_potenciales_candidatos(id_oferta);
+
+            if (listCandidato == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(listCandidato);
         }
 
         [HttpPut("{id}")]

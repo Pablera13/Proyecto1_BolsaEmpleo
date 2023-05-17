@@ -1,5 +1,6 @@
 ﻿using DataAccess.Models;
 using DataAccess.RequestObjects;
+using DataAccess.Response_Objects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
@@ -22,7 +23,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Empresa>>> GetEmpresa()
         {
-            List<Empresa> listEmpresa = await _empresaService.GetAll();
+            List<EmpresaVmGET> listEmpresa = await _empresaService.GetAll();
 
             if (listEmpresa == null)
             {
