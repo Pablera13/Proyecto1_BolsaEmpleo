@@ -100,21 +100,24 @@ namespace Services.Services
 
         public async Task<List<CandidatoVmGET>> Ver_potenciales_candidatos(int id_oferta)
         {
-
-            var oferta = await _context.Oferta
-           .Include(c => c.OfertaHabilidades).FirstOrDefaultAsync(c => c.Id == id_oferta);
-
-            var habilidades = oferta.OfertaHabilidades.Select(ch => ch.HabilidadId).ToArray();
-
             List<Candidato> listaCandidato = await _context.Candidato
            .Include(o => o.formaciones)
            .Include(o => o.CandidatoHabilidades)
            .Include(o => o.CandidatoOfertas)
-           
            .ToListAsync();
 
             List<CandidatoVmGET> listaCandidatoVm = new List<CandidatoVmGET>();
 
+            var oferta = await _context.Oferta
+           .Include(c => c.OfertaHabilidades).FirstOrDefaultAsync(c => c.Id == id_oferta);
+
+            if (oferta == null)
+            {
+                return listaCandidatoVm;
+            }
+
+            var habilidades = oferta.OfertaHabilidades.Select(ch => ch.HabilidadId).ToArray();
+       
             foreach (var habilidadId in habilidades)
             {
                 foreach (Candidato candidato in listaCandidato)
