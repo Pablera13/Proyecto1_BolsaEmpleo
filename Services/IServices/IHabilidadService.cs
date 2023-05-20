@@ -15,9 +15,9 @@ namespace Services.IServices
         public Task<Habilidad> GetById(int id);
         public Task<HabilidadVm> GetById2(int id);
 
-        public Task<Habilidad> Create(HabilidadVm habilidadRequest);
+        public Task<Habilidad> Create(HabilidadVm habilidadvm);
 
-        public Task Update(int id, HabilidadVm habilidadRequest);
+        public Task Update(int id, HabilidadVm habilidadvm);
 
         public Task Delete(int id);
     }

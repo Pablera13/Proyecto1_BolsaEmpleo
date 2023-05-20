@@ -152,17 +152,17 @@ namespace Services.Services
             return newCandidato;
         }
 
-        public async Task<Candidato> Create(CandidatoVm candidatoRequest)
+        public async Task<Candidato> Create(CandidatoVm candidatovm)
         {
             Candidato newCandidato = new Candidato();
-            newCandidato.Id = candidatoRequest.Id; 
-            newCandidato.Nombre = candidatoRequest.Nombre;
-            newCandidato.Apellido1 = candidatoRequest.Apellido1;
-            newCandidato.Apellido2 = candidatoRequest.Apellido2;
-            newCandidato.Fecha_Nacimiento = candidatoRequest.Fecha_Nacimiento;
-            newCandidato.Direccion = candidatoRequest.Direccion;
-            newCandidato.Telefono = candidatoRequest.Telefono;
-            newCandidato.Descripcion = candidatoRequest.Descripcion;
+            newCandidato.Id = candidatovm.Id; 
+            newCandidato.Nombre = candidatovm.Nombre;
+            newCandidato.Apellido1 = candidatovm.Apellido1;
+            newCandidato.Apellido2 = candidatovm.Apellido2;
+            newCandidato.Fecha_Nacimiento = candidatovm.Fecha_Nacimiento;
+            newCandidato.Direccion = candidatovm.Direccion;
+            newCandidato.Telefono = candidatovm.Telefono;
+            newCandidato.Descripcion = candidatovm.Descripcion;
 
             _context.Candidato.Add(newCandidato);
             await _context.SaveChangesAsync();
@@ -171,17 +171,17 @@ namespace Services.Services
 
         }
 
-        public async Task Update(int id, CandidatoVm candidatoRequest)
+        public async Task Update(int id, CandidatoVm candidatovm)
         {
             Candidato CandidatoEdit = await _context.Candidato.FindAsync(id);
 
-            CandidatoEdit.Nombre = candidatoRequest.Nombre;
-            CandidatoEdit.Apellido1 = candidatoRequest.Apellido1;
-            CandidatoEdit.Apellido2 = candidatoRequest.Apellido2;
-            CandidatoEdit.Fecha_Nacimiento = candidatoRequest.Fecha_Nacimiento;
-            CandidatoEdit.Direccion = candidatoRequest.Direccion;
-            CandidatoEdit.Telefono = candidatoRequest.Telefono;
-            CandidatoEdit.Descripcion = candidatoRequest.Descripcion;
+            CandidatoEdit.Nombre = candidatovm.Nombre;
+            CandidatoEdit.Apellido1 = candidatovm.Apellido1;
+            CandidatoEdit.Apellido2 = candidatovm.Apellido2;
+            CandidatoEdit.Fecha_Nacimiento = candidatovm.Fecha_Nacimiento;
+            CandidatoEdit.Direccion = candidatovm.Direccion;
+            CandidatoEdit.Telefono = candidatovm.Telefono;
+            CandidatoEdit.Descripcion = candidatovm.Descripcion;
 
             _context.Entry(CandidatoEdit).State = EntityState.Modified;
 

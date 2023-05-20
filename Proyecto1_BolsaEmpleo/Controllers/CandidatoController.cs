@@ -25,32 +25,25 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         {
             List<CandidatoVmGET> listCandidato = await _candidatoService.GetAll();
 
-            if (listCandidato == null)
-            {
-                return NotFound();
-            }
+            return listCandidato != null ? Ok(listCandidato) : NotFound();
 
-            return Ok(listCandidato);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Candidato>> GetCandidato(int id)
         {
             var candidato = await _candidatoService.GetById(id);
-            if (candidato == null)
-            {
-                return NotFound();
-            }
 
-            return Ok(candidato);
+            return (candidato == null) ? NotFound() : Ok(candidato);
+
         }
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCandidato(int id, CandidatoVm candidatoRequest)
+        public async Task<IActionResult> PutCandidato(int id, CandidatoVm candidatovm)
         {
 
-            if (candidatoRequest == null)
+            if (candidatovm == null)
             {
                 return BadRequest();
             }
@@ -62,19 +55,19 @@ namespace Proyecto1_BolsaEmpleo.Controllers
                 return NotFound();
             }
 
-            await _candidatoService.Update(id, candidatoRequest);
+            await _candidatoService.Update(id, candidatovm);
             return NoContent();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Candidato>> PostAuthor(CandidatoVm candidatoRequest)
+        public async Task<ActionResult<Candidato>> PostAuthor(CandidatoVm candidatovm)
         {
-            if (candidatoRequest == null)
+            if (candidatovm == null)
             {
                 return BadRequest();
             }
 
-            Candidato newCandidato = await _candidatoService.Create(candidatoRequest);
+            Candidato newCandidato = await _candidatoService.Create(candidatovm);
 
             return CreatedAtAction("GetCandidato", new { id = newCandidato.Id }, newCandidato);
 

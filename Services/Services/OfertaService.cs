@@ -119,24 +119,24 @@ namespace Services.Services
         }
 
         
-        public async Task<Oferta> Create(OfertaVm ofertaRequest)
+        public async Task<Oferta> Create(OfertaVm ofertavm)
         {
 
             Oferta newOferta = new Oferta();
-            newOferta.Id = ofertaRequest.Id;
-            newOferta.EmpresaId = ofertaRequest.EmpresaId;
-            newOferta.Descripcion = ofertaRequest.Descripcion;
+            newOferta.Id = ofertavm.Id;
+            newOferta.EmpresaId = ofertavm.EmpresaId;
+            newOferta.Descripcion = ofertavm.Descripcion;
 
             _context.Oferta.Add(newOferta);
             await _context.SaveChangesAsync();
 
             return newOferta;
         }
-        public async Task Update(int id, OfertaVm ofertaRequest)
+        public async Task Update(int id, OfertaVm ofertavm)
         {
             Oferta OfertaEdit = await _context.Oferta.FindAsync(id);
 
-            OfertaEdit.Descripcion = ofertaRequest.Descripcion;
+            OfertaEdit.Descripcion = ofertavm.Descripcion;
 
             _context.Entry(OfertaEdit).State = EntityState.Modified;
 

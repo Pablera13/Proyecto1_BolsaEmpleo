@@ -14,9 +14,9 @@ namespace Services.IServices
         public Task<List<FormacionVm>> GetAll();
         public Task<Formacion> GetById(int id);
         public Task<FormacionVm> GetById2(int id);
-        public Task<Formacion> Create(FormacionVm formacionRequest);
+        public Task<Formacion> Create(FormacionVm formacionvm);
 
-        public Task Update(int id, FormacionVm formacionRequest);
+        public Task Update(int id, FormacionVm formacionvm);
 
         public Task Delete(int id);
     }

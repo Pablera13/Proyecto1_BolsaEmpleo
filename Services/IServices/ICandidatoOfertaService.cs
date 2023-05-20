@@ -12,7 +12,7 @@ namespace Services.IServices
     {
         public Task<List<CandidatoOfertaVm>> GetAll();
         public Task<CandidatoOferta> GetById(int id_candidato, int id_oferta);
-        public Task<CandidatoOferta> Create(CandidatoOfertaVm candidatoofertaRequest);
+        public Task<CandidatoOferta> Create(CandidatoOfertaVm candidatoofertavm);
         public Task Delete(int id_candidato, int id_oferta);
     }
 }

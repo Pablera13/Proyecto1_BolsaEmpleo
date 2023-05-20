@@ -15,9 +15,9 @@ namespace Services.IServices
 
         public Task<CandidatoVmGET> GetById(int id);
 
-        public Task<Candidato> Create(CandidatoVm candidatoRequest);
+        public Task<Candidato> Create(CandidatoVm candidatovm);
 
-        public Task Update(int id, CandidatoVm candidatoRequest);
+        public Task Update(int id, CandidatoVm candidatovm);
 
         public Task Delete(int id);
 

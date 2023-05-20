@@ -65,12 +65,12 @@ namespace Services.Services
 
         }
 
-            public async Task<Habilidad> Create(HabilidadVm habilidadRequest)
+            public async Task<Habilidad> Create(HabilidadVm habilidadvm)
         {
 
             Habilidad newHabilidad = new Habilidad();
-            newHabilidad.Id = habilidadRequest.Id;
-            newHabilidad.Nombre = habilidadRequest.Nombre;
+            newHabilidad.Id = habilidadvm.Id;
+            newHabilidad.Nombre = habilidadvm.Nombre;
 
             _context.Habilidad.Add(newHabilidad);
             await _context.SaveChangesAsync();
@@ -78,11 +78,11 @@ namespace Services.Services
             return newHabilidad;
         }
 
-        public async Task Update(int id, HabilidadVm habilidadRequest)
+        public async Task Update(int id, HabilidadVm habilidadvm)
         {
             Habilidad HabilidadEdit = await _context.Habilidad.FindAsync(id);
 
-            HabilidadEdit.Nombre = habilidadRequest.Nombre;
+            HabilidadEdit.Nombre = habilidadvm.Nombre;
 
             _context.Entry(HabilidadEdit).State = EntityState.Modified;
 

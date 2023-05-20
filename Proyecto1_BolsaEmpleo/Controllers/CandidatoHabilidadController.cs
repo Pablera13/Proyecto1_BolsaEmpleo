@@ -24,23 +24,19 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         {
             List<CandidatoHabilidadVm> listCandidatoHabilidadVm = await _candidatohabilidadService.GetAll();
 
-            if (listCandidatoHabilidadVm == null)
-            {
-                return NotFound();
-            }
+            return listCandidatoHabilidadVm != null ? Ok(listCandidatoHabilidadVm) : NotFound();
 
-            return Ok(listCandidatoHabilidadVm);
         }
 
         [HttpPost]
-        public async Task<ActionResult<CandidatoHabilidad>> PostCandidatoHabilidad(CandidatoHabilidadVm candidatohabilidadRequest)
+        public async Task<ActionResult<CandidatoHabilidad>> PostCandidatoHabilidad(CandidatoHabilidadVm candidatohabilidadvm)
         {
-            if (candidatohabilidadRequest == null)
+            if (candidatohabilidadvm == null)
             {
                 return BadRequest();
             }
 
-            CandidatoHabilidad newCandidatoHabilidad = await _candidatohabilidadService.Create(candidatohabilidadRequest);
+            CandidatoHabilidad newCandidatoHabilidad = await _candidatohabilidadService.Create(candidatohabilidadvm);
 
             return CreatedAtAction("GetCandidatoHabilidad", new { id = newCandidatoHabilidad.CandidatoId }, newCandidatoHabilidad);
         }

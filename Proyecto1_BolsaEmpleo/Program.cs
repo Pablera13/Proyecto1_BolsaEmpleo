@@ -13,9 +13,6 @@ builder.Services.AddServices(builder.Configuration);
 builder.Services.AddDbContext<MyApiContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("MyApiContext") ?? throw new InvalidOperationException("Connection string 'MyApiContext' not found.")));
 
-//builder.Services.AddDbContext<MyApiContext>(options =>
-//options.UseInMemoryDatabase("ExamenBD"));
-
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>

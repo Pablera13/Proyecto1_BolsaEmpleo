@@ -23,44 +23,37 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         public async Task<ActionResult<IEnumerable<Formacion>>> GetAll()
         {
             List<FormacionVm> listFormacion = await _formacionService.GetAll();
+            
+            return listFormacion != null ? Ok(listFormacion) : NotFound();
 
-            if (listFormacion == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(listFormacion);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Formacion>> GetFormacion(int id)
         {
             var formacion = await _formacionService.GetById2(id);
-            if (formacion == null)
-            {
-                return NotFound();
-            }
+            
+            return formacion != null ? Ok(formacion) : NotFound();
 
-            return Ok(formacion);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Formacion>> PostFormacion(FormacionVm formacionRequest)
+        public async Task<ActionResult<Formacion>> PostFormacion(FormacionVm formacionvm)
         {
-            if (formacionRequest == null)
+            if (formacionvm == null)
             {
                 return BadRequest();
             }
 
-            Formacion newFormacion = await _formacionService.Create(formacionRequest);
+            Formacion newFormacion = await _formacionService.Create(formacionvm);
 
             return CreatedAtAction("PostFormacion", new { id = newFormacion.Id });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFormacion(int id, FormacionVm formacionRequest)
+        public async Task<IActionResult> PutFormacion(int id, FormacionVm formacionvm)
         {
-            if (formacionRequest == null)
+            if (formacionvm == null)
             {
                 return BadRequest();
             }
@@ -72,7 +65,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
                 return NotFound();
             }
 
-            await _formacionService.Update(id, formacionRequest);
+            await _formacionService.Update(id, formacionvm);
             return NoContent();
         }
 

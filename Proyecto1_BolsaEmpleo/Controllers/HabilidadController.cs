@@ -24,44 +24,37 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         public async Task<ActionResult<IEnumerable<HabilidadVm>>> GetHabilidad()
         {
             List<HabilidadVm> listHabilidad = await _habilidadService.GetAll();
+            
+            return listHabilidad != null ? Ok(listHabilidad) : NotFound();
 
-            if (listHabilidad == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(listHabilidad);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<HabilidadVm>> GetHabilidad(int id)
         {
             var habilidad = await _habilidadService.GetById2(id);
-            if (habilidad == null)
-            {
-                return NotFound();
-            }
+            
+            return habilidad != null ? Ok(habilidad) : NotFound();
 
-            return Ok(habilidad);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Habilidad>> PostHabilidad(HabilidadVm habilidadRequest)
+        public async Task<ActionResult<Habilidad>> PostHabilidad(HabilidadVm habilidadvm)
         {
-            if (habilidadRequest == null)
+            if (habilidadvm == null)
             {
                 return BadRequest();
             }
 
-            Habilidad newHabilidad = await _habilidadService.Create(habilidadRequest);
+            Habilidad newHabilidad = await _habilidadService.Create(habilidadvm);
 
             return CreatedAtAction("GetHabilidad", new { id = newHabilidad.Id });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHabilidad(int id, HabilidadVm habilidadRequest)
+        public async Task<IActionResult> PutHabilidad(int id, HabilidadVm habilidadvm)
         {
-            if (habilidadRequest == null)
+            if (habilidadvm == null)
             {
                 return BadRequest();
             }
@@ -73,7 +66,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
                 return NotFound();
             }
 
-            await _habilidadService.Update(id, habilidadRequest);
+            await _habilidadService.Update(id, habilidadvm);
             return NoContent();
         }
 

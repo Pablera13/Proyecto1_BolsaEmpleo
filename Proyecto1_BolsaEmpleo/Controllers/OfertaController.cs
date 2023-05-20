@@ -23,45 +23,38 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         public async Task<ActionResult<IEnumerable<Oferta>>> GetOferta()
         {
             List<OfertaVmGET> listOferta = await _ofertaService.GetAll();
+            
+            return listOferta != null ? Ok(listOferta) : NotFound();
 
-            if (listOferta == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(listOferta);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Oferta>> GetOferta(int id)
         {
             var oferta = await _ofertaService.GetById(id);
-            if (oferta == null)
-            {
-                return NotFound();
-            }
+            
+            return oferta != null ? Ok(oferta) : NotFound();
 
-            return Ok(oferta);
         }
 
 
         [HttpPost]
-        public async Task<ActionResult<Oferta>> PostOferta(OfertaVm ofertaRequest)
+        public async Task<ActionResult<Oferta>> PostOferta(OfertaVm ofertavm)
         {
 
-            if (ofertaRequest == null)
+            if (ofertavm == null)
             {
                 return BadRequest();
             }
 
-            Oferta newOferta = await _ofertaService.Create(ofertaRequest);
+            Oferta newOferta = await _ofertaService.Create(ofertavm);
             return CreatedAtAction("GetOferta", new { id = newOferta.Id });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOferta(int id, OfertaVm ofertaRequest)
+        public async Task<IActionResult> PutOferta(int id, OfertaVm ofertavm)
         {
-            if (ofertaRequest == null)
+            if (ofertavm == null)
             {
                 return BadRequest();
             }
@@ -73,7 +66,7 @@ namespace Proyecto1_BolsaEmpleo.Controllers
                 return NotFound();
             }
 
-            await _ofertaService.Update(id, ofertaRequest);
+            await _ofertaService.Update(id, ofertavm);
             return NoContent();
         }
 

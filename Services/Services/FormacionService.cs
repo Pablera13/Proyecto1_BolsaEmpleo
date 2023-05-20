@@ -70,15 +70,15 @@ namespace Services.Services
 
         }
 
-        public async Task<Formacion> Create(FormacionVm formacionRequest)
+        public async Task<Formacion> Create(FormacionVm formacionvm)
         {
 
             Formacion newFormacion = new Formacion();
-            newFormacion.Id = formacionRequest.Id;
-            newFormacion.CandidatoId = formacionRequest.CandidatoId;
-            newFormacion.Nombre = formacionRequest.Nombre;
-            newFormacion.Años_Estudio = formacionRequest.Años_Estudio;
-            newFormacion.Fecha_Culminacion = formacionRequest.Fecha_Culminacion;
+            newFormacion.Id = formacionvm.Id;
+            newFormacion.CandidatoId = formacionvm.CandidatoId;
+            newFormacion.Nombre = formacionvm.Nombre;
+            newFormacion.Años_Estudio = formacionvm.Años_Estudio;
+            newFormacion.Fecha_Culminacion = formacionvm.Fecha_Culminacion;
 
             _context.Formacion.Add(newFormacion);
             await _context.SaveChangesAsync();
@@ -86,13 +86,13 @@ namespace Services.Services
             return newFormacion;
         }
 
-        public async Task Update(int id, FormacionVm formacionRequest)
+        public async Task Update(int id, FormacionVm formacionvm)
         {
             Formacion FormacionEdit = await _context.Formacion.FindAsync(id);
 
-            FormacionEdit.Nombre = formacionRequest.Nombre;
-            FormacionEdit.Años_Estudio = formacionRequest.Años_Estudio;
-            FormacionEdit.Fecha_Culminacion = formacionRequest.Fecha_Culminacion;
+            FormacionEdit.Nombre = formacionvm.Nombre;
+            FormacionEdit.Años_Estudio = formacionvm.Años_Estudio;
+            FormacionEdit.Fecha_Culminacion = formacionvm.Fecha_Culminacion;
 
             _context.Entry(FormacionEdit).State = EntityState.Modified;
 

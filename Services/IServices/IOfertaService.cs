@@ -15,9 +15,9 @@ namespace Services.IServices
 
         public Task<OfertaVmGET2> GetById(int id);
 
-        public Task<Oferta> Create(OfertaVm ofertaRequest);
+        public Task<Oferta> Create(OfertaVm ofertavm);
 
-        public Task Update(int id, OfertaVm ofertaRequest);
+        public Task Update(int id, OfertaVm ofertavm);
 
         public Task Delete(int id);
     }

@@ -23,24 +23,20 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         public async Task<ActionResult<IEnumerable<OfertaHabilidadVm>>> GetOfertaHabilidad()
         {
             List<OfertaHabilidadVm> listOfertaHabilidadVm = await _candidatohabilidadService.GetAll();
+            
+            return listOfertaHabilidadVm != null ? Ok(listOfertaHabilidadVm) : NotFound();
 
-            if (listOfertaHabilidadVm == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(listOfertaHabilidadVm);
         }
 
         [HttpPost]
-        public async Task<ActionResult<OfertaHabilidad>> PostOfertaHabilidad(OfertaHabilidadVm ofertahabilidadRequest)
+        public async Task<ActionResult<OfertaHabilidad>> PostOfertaHabilidad(OfertaHabilidadVm ofertahabilidadvm)
         {
-            if (ofertahabilidadRequest == null)
+            if (ofertahabilidadvm == null)
             {
                 return BadRequest();
             }
 
-            OfertaHabilidad newOfertaHabilidad = await _candidatohabilidadService.Create(ofertahabilidadRequest);
+            OfertaHabilidad newOfertaHabilidad = await _candidatohabilidadService.Create(ofertahabilidadvm);
 
             return CreatedAtAction("GetOfertaHabilidad", new { id = newOfertaHabilidad.OfertaId }, newOfertaHabilidad);
         }

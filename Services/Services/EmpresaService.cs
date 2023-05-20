@@ -44,7 +44,7 @@ namespace Services.Services
                     newOferta.Descripcion = oferta.Descripcion;
                     newOferta.EmpresaId = newEmpresa.Id;
 
-                    newEmpresa.Ofertas.Add(newOferta);                        
+                    newEmpresa.Ofertas.Add(newOferta);
 
                 }
 
@@ -56,9 +56,9 @@ namespace Services.Services
 
         public async Task<EmpresaVmGET> GetById(int id)
         {
-              var empresa = await _context.Empresa
-             .Include(c => c.ofertas)
-             .FirstOrDefaultAsync(c => c.Id == id);
+            var empresa = await _context.Empresa
+           .Include(c => c.ofertas)
+           .FirstOrDefaultAsync(c => c.Id == id);
 
             if (empresa == null)
             {
@@ -85,34 +85,34 @@ namespace Services.Services
 
             return newEmpresa;
         }
-        public async Task<Empresa> Create(EmpresaVm empresaRequest)
+        public async Task<Empresa> Create(EmpresaVm empresavm)
         {
             Empresa newEmpresa = new Empresa();
-            newEmpresa.Id = empresaRequest.Id;
-            newEmpresa.Nombre = empresaRequest.Nombre;
-            newEmpresa.Direccion = empresaRequest.Direccion;
-            newEmpresa.Telefono = empresaRequest.Telefono;
+            newEmpresa.Id = empresavm.Id;
+            newEmpresa.Nombre = empresavm.Nombre;
+            newEmpresa.Direccion = empresavm.Direccion;
+            newEmpresa.Telefono = empresavm.Telefono;
 
             _context.Empresa.Add(newEmpresa);
             await _context.SaveChangesAsync();
 
             return newEmpresa;
         }
-        public async Task Update(int id, EmpresaVm empresaRequest)
+        public async Task Update(int id, EmpresaVm empresavm)
         {
             Empresa EmpresaEdit = await _context.Empresa.FindAsync(id);
 
-            EmpresaEdit.Nombre = empresaRequest.Nombre;
-            EmpresaEdit.Direccion = empresaRequest.Direccion;
-            EmpresaEdit.Telefono = empresaRequest.Telefono;
+            EmpresaEdit.Nombre = empresavm.Nombre;
+            EmpresaEdit.Direccion = empresavm.Direccion;
+            EmpresaEdit.Telefono = empresavm.Telefono;
 
             _context.Entry(EmpresaEdit).State = EntityState.Modified;
-        
-             await _context.SaveChangesAsync();         
+
+            await _context.SaveChangesAsync();
         }
         public async Task Delete(int id)
         {
-     
+
             var empresa = await _context.Empresa.FindAsync(id);
 
             _context.Empresa.Remove(empresa);

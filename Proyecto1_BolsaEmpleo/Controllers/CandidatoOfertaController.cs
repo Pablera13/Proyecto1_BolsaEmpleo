@@ -21,25 +21,21 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CandidatoOfertaVm>>> GetCandidatoOferta()
         {
-            List<CandidatoOfertaVm> listCandidatoofertaVm = await _candidatoofertaService.GetAll();
+            List<CandidatoOfertaVm> listCandidatoOfertaVm = await _candidatoofertaService.GetAll();
 
-            if (listCandidatoofertaVm == null)
-            {
-                return NotFound();
-            }
+            return listCandidatoOfertaVm != null ? Ok(listCandidatoOfertaVm) : NotFound();
 
-            return Ok(listCandidatoofertaVm);
         }
 
         [HttpPost]
-        public async Task<ActionResult<CandidatoOferta>> PostCandidatoOferta(CandidatoOfertaVm candidatoofertaRequest)
+        public async Task<ActionResult<CandidatoOferta>> PostCandidatoOferta(CandidatoOfertaVm candidatoofertavm)
         {
-            if (candidatoofertaRequest == null)
+            if (candidatoofertavm == null)
             {
                 return BadRequest();
             }
 
-            CandidatoOferta newCandidatoOferta = await _candidatoofertaService.Create(candidatoofertaRequest);
+            CandidatoOferta newCandidatoOferta = await _candidatoofertaService.Create(candidatoofertavm);
 
             return CreatedAtAction("GetCandidatoOferta", new { id = newCandidatoOferta.CandidatoId }, newCandidatoOferta);
 

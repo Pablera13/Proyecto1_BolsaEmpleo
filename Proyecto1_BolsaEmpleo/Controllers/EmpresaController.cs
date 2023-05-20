@@ -25,30 +25,22 @@ namespace Proyecto1_BolsaEmpleo.Controllers
         {
             List<EmpresaVmGET> listEmpresa = await _empresaService.GetAll();
 
-            if (listEmpresa == null)
-            {
-                return NotFound();
-            }
+            return listEmpresa != null ? Ok(listEmpresa) : NotFound();
 
-            return Ok(listEmpresa);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Empresa>> GetEmpresa(int id)
         {
             var empresa = await _empresaService.GetById(id);
-            if (empresa == null)
-            {
-                return NotFound();
-            }
+            return empresa != null ? Ok(empresa) : NotFound();
 
-            return Ok(empresa);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmpresa(int id, EmpresaVm empresaRequest)
+        public async Task<IActionResult> PutEmpresa(int id, EmpresaVm empresavm)
         {
-            if (empresaRequest == null)
+            if (empresavm == null)
             {
                 return BadRequest();
             }
@@ -60,20 +52,20 @@ namespace Proyecto1_BolsaEmpleo.Controllers
                 return NotFound();
             }
 
-            await _empresaService.Update(id, empresaRequest);
+            await _empresaService.Update(id, empresavm);
             return NoContent();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Empresa>> PostAuthor(EmpresaVm empresaRequest)
+        public async Task<ActionResult<Empresa>> PostAuthor(EmpresaVm empresavm)
         {
 
-            if (empresaRequest == null)
+            if (empresavm == null)
             {
                 return BadRequest();
             }
 
-            Empresa newEmpresa = await _empresaService.Create(empresaRequest);
+            Empresa newEmpresa = await _empresaService.Create(empresavm);
 
             return CreatedAtAction("GetEmpresa", new { id = newEmpresa.Id }, newEmpresa);
         }

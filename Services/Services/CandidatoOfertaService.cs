@@ -46,11 +46,11 @@ namespace Services.Services
             return newCandidatoOferta;
         }
 
-        public async Task<CandidatoOferta> Create(CandidatoOfertaVm candidatoofertaRequest)
+        public async Task<CandidatoOferta> Create(CandidatoOfertaVm candidatoofertavm)
         {
             CandidatoOferta newCandidatoOferta = new CandidatoOferta();
-            newCandidatoOferta.CandidatoId = candidatoofertaRequest.CandidatoId;
-            newCandidatoOferta.OfertaId = candidatoofertaRequest.OfertaId;
+            newCandidatoOferta.CandidatoId = candidatoofertavm.CandidatoId;
+            newCandidatoOferta.OfertaId = candidatoofertavm.OfertaId;
 
             _context.CandidatoOferta.Add(newCandidatoOferta);
             await _context.SaveChangesAsync();
