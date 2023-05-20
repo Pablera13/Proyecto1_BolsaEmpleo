@@ -52,11 +52,6 @@ namespace Services.Services
             newOfertaHabilidad.OfertaId = ofertahabilidadRequest.OfertaId;
             newOfertaHabilidad.HabilidadId = ofertahabilidadRequest.HabilidadId;
 
-            //if (_context.OfertaHabilidad == null)
-            //{
-            //    return Problem("Entity set 'MyApiContext.OfertaHabilidad'  is null.");
-            //}
-
             _context.OfertaHabilidad.Add(newOfertaHabilidad);
             await _context.SaveChangesAsync();
 

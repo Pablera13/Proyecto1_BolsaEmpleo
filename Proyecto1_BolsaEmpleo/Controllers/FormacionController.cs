@@ -19,6 +19,31 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             _formacionService = formacionServiceService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Formacion>>> GetAll()
+        {
+            List<FormacionVm> listFormacion = await _formacionService.GetAll();
+
+            if (listFormacion == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(listFormacion);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Formacion>> GetFormacion(int id)
+        {
+            var formacion = await _formacionService.GetById2(id);
+            if (formacion == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(formacion);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Formacion>> PostFormacion(FormacionVm formacionRequest)
         {

@@ -19,7 +19,7 @@ namespace DataAccess
             services.AddDbContext<MyApiContext>(options =>
             options.UseSqlServer( configuration.GetConnectionString("MyApiContext") ?? throw new InvalidOperationException("Connection string 'MyApiContext' not found.")));
 
-            services.AddScoped<MyApiContext>(); //services.AddScoped<IMyDbContext, MyDbContext>();
+            services.AddScoped<MyApiContext>();
 
             return services;
         }

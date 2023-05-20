@@ -33,6 +33,18 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             return Ok(listHabilidad);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<HabilidadVm>> GetHabilidad(int id)
+        {
+            var habilidad = await _habilidadService.GetById2(id);
+            if (habilidad == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(habilidad);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Habilidad>> PostHabilidad(HabilidadVm habilidadRequest)
         {

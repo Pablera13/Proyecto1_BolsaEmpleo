@@ -20,11 +20,54 @@ namespace Services.Services
             _context = context;
         }
 
+        public async Task<List<FormacionVm>> GetAll()
+        {
+
+            List<Formacion> listaFormacion = await _context.Formacion.ToListAsync();
+
+            List<FormacionVm> listaFormacionVm = new List<FormacionVm>();
+
+            foreach (Formacion formacion in listaFormacion)
+            {
+                FormacionVm newFormacionVm = new FormacionVm();
+                newFormacionVm.Id = formacion.Id;
+                newFormacionVm.Nombre = formacion.Nombre;
+                newFormacionVm.Años_Estudio = formacion.Años_Estudio;
+                newFormacionVm.Fecha_Culminacion = formacion.Fecha_Culminacion;
+                newFormacionVm.CandidatoId = formacion.CandidatoId;
+
+                listaFormacionVm.Add(newFormacionVm);
+            }
+
+            return listaFormacionVm;
+        }
         public async Task<Formacion> GetById(int id)
         {
             var formacion = await _context.Formacion.FindAsync(id);
 
             return formacion;
+        }
+
+        public async Task<FormacionVm> GetById2(int id)
+        {
+            var formacion = await _context.Formacion
+           .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (formacion == null)
+            {
+                return null;
+            }
+
+            FormacionVm newFormacion = new FormacionVm();
+
+            newFormacion.Id = formacion.Id;
+            newFormacion.Nombre = formacion.Nombre;
+            newFormacion.Años_Estudio = formacion.Años_Estudio;
+            newFormacion.Fecha_Culminacion = formacion.Fecha_Culminacion;
+            newFormacion.CandidatoId = formacion.CandidatoId;
+
+            return newFormacion;
+
         }
 
         public async Task<Formacion> Create(FormacionVm formacionRequest)

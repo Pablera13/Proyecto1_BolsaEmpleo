@@ -1,6 +1,7 @@
 ﻿using DataAccess.Data;
 using DataAccess.Models;
 using DataAccess.RequestObjects;
+using DataAccess.Response_Objects;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
 using System;
@@ -45,7 +46,26 @@ namespace Services.Services
             return habilidad;
         }
 
-        public async Task<Habilidad> Create(HabilidadVm habilidadRequest)
+        public async Task<HabilidadVm> GetById2(int id)
+        {
+            var habilidad = await _context.Habilidad
+           .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (habilidad == null)
+            {
+                return null;
+            }
+
+            HabilidadVm newHabilidad = new HabilidadVm();
+
+            newHabilidad.Id = habilidad.Id;
+            newHabilidad.Nombre = habilidad.Nombre;
+
+            return newHabilidad;
+
+        }
+
+            public async Task<Habilidad> Create(HabilidadVm habilidadRequest)
         {
 
             Habilidad newHabilidad = new Habilidad();

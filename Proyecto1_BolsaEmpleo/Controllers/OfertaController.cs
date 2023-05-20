@@ -44,18 +44,6 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             return Ok(oferta);
         }
 
-        [HttpPatch]
-        public async Task<ActionResult<IEnumerable<Oferta>>> Ver_potenciales_ofertas(int id_candidato)
-        {
-            List<OfertaVmGET> listOferta = await _ofertaService.Ver_potenciales_ofertas(id_candidato);
-
-            if (listOferta == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(listOferta);
-        }
 
         [HttpPost]
         public async Task<ActionResult<Oferta>> PostOferta(OfertaVm ofertaRequest)

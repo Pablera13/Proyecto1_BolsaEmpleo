@@ -50,11 +50,6 @@ namespace Services.Services
             newCandidatoHabilidad.CandidatoId = candidatohabilidadRequest.CandidatoId;
             newCandidatoHabilidad.HabilidadId = candidatohabilidadRequest.HabilidadId;
 
-            //if (_context.CandidatoHabilidad == null)
-            //{
-            //   return Problem("Entity set 'MyApiContext.CandidatoHabilidad'  is null.");
-            //}
-
             _context.CandidatoHabilidad.Add(newCandidatoHabilidad);
             await _context.SaveChangesAsync();
 

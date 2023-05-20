@@ -60,67 +60,65 @@ namespace Services.Services
 
         }
 
-        public async Task<Oferta> GetById(int id)
+        public async Task<OfertaVmGET2> GetById(int id)
         {
             var oferta = await _context.Oferta
            .Include(c => c.CandidatoOfertas).Include(c => c.OfertaHabilidades)
            .FirstOrDefaultAsync(c => c.Id == id);
 
-            return oferta;
-        }
-
-        public async Task<List<OfertaVmGET>> Ver_potenciales_ofertas(int id_Candidato)
-        {
-            List<Oferta> listaOferta = await _context.Oferta
-           .Include(o => o.OfertaHabilidades)
-           .ToListAsync();
-
-            List<OfertaVmGET> listaOfertaVm = new List<OfertaVmGET>();
-
-            var candidato = await _context.Candidato
-           .Include(c => c.CandidatoHabilidades).FirstOrDefaultAsync(c => c.Id == id_Candidato);
-
-            if (candidato == null)
+            if (oferta == null)
             {
-                return listaOfertaVm;
+                return null;
             }
 
-            var habilidades = candidato.CandidatoHabilidades.Select(ch => ch.HabilidadId).ToArray();
+            OfertaVmGET2 newOferta = new OfertaVmGET2();
+            newOferta.Id = oferta.Id;
+            newOferta.Descripcion = oferta.Descripcion;
 
-            foreach (var habilidadId in habilidades)
+            Empresa empresa = await _context.Empresa
+           .FirstOrDefaultAsync(c => c.Id == oferta.EmpresaId);
+
+            newOferta.Empresa = empresa.Nombre;
+
+            foreach (OfertaHabilidad ofertaHabilidad in oferta.OfertaHabilidades)
             {
-                foreach (Oferta oferta in listaOferta)
-                {
-                    OfertaVmGET newOfertaVm = new OfertaVmGET();
+                OfertaHabilidadVmGET newOfertaHabilidadVmGET = new OfertaHabilidadVmGET();
 
-                    Empresa empresa = await _context.Empresa
-                    .FirstOrDefaultAsync(c => c.Id == oferta.EmpresaId);
-                    
-                    newOfertaVm.Id = oferta.Id;
-                    newOfertaVm.Descripcion = oferta.Descripcion;
-                    newOfertaVm.Empresa = empresa.Nombre;
+                Habilidad habilidad = await _context.Habilidad
+                .FirstOrDefaultAsync(c => c.Id == ofertaHabilidad.HabilidadId);
 
-                    foreach (OfertaHabilidad ofertahabilidad in oferta.OfertaHabilidades)
-                    {
-                        OfertaHabilidadVmGET newOfertaHabilidadVm = new OfertaHabilidadVmGET();
+                newOfertaHabilidadVmGET.Nombre = habilidad.Nombre;
 
-                        Habilidad habilidad = await _context.Habilidad
-                        .FirstOrDefaultAsync(c => c.Id == ofertahabilidad.HabilidadId);
+                newOferta.Habilidades.Add(newOfertaHabilidadVmGET);
 
-                        newOfertaHabilidadVm.Nombre = habilidad.Nombre;
+            }
 
-                        newOfertaVm.Habilidades.Add(newOfertaHabilidadVm);
+            foreach (CandidatoOferta candidatoOfertas in oferta.CandidatoOfertas)
+            {
+                CandidatoVm newCandidatoVm = new CandidatoVm();
 
-                        if (ofertahabilidad.HabilidadId == habilidadId)
-                        {
-                            listaOfertaVm.Add(newOfertaVm);
-                        }
-                    }
-                }
-            }    
-            return listaOfertaVm;
+                Candidato candidato = await _context.Candidato
+                .FirstOrDefaultAsync(c => c.Id == candidatoOfertas.CandidatoId);
+
+                newCandidatoVm.Id = candidato.Id;
+                newCandidatoVm.Nombre = candidato.Nombre;
+                newCandidatoVm.Apellido1 = candidato.Apellido1;
+                newCandidatoVm.Apellido2 = candidato.Apellido2;
+                newCandidatoVm.Fecha_Nacimiento = candidato.Fecha_Nacimiento;
+                newCandidatoVm.Direccion = candidato.Direccion;
+                newCandidatoVm.Telefono = candidato.Telefono;
+                newCandidatoVm.Descripcion = candidato.Descripcion;
+
+                newOferta.Candidatos.Add(newCandidatoVm);
+
+            }
+
+
+
+            return newOferta;
         }
 
+        
         public async Task<Oferta> Create(OfertaVm ofertaRequest)
         {
 

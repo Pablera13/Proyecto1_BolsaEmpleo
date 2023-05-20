@@ -11,8 +11,9 @@ namespace Services.IServices
     public interface IFormacionService
     {
 
+        public Task<List<FormacionVm>> GetAll();
         public Task<Formacion> GetById(int id);
-
+        public Task<FormacionVm> GetById2(int id);
         public Task<Formacion> Create(FormacionVm formacionRequest);
 
         public Task Update(int id, FormacionVm formacionRequest);

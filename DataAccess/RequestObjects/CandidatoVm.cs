@@ -13,7 +13,6 @@
         public int Telefono { get; set; }
         public string Descripcion { get; set; }
 
-        //public List<HabilidadVm> habilidades { get; set; }
 
     }
 }

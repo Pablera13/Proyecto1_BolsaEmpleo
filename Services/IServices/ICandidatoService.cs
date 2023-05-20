@@ -13,8 +13,7 @@ namespace Services.IServices
     {
         public Task<List<CandidatoVmGET>> GetAll();
 
-        public Task<Candidato> GetById(int id);
-        public Task<List<CandidatoVmGET>> Ver_potenciales_candidatos(int id);
+        public Task<CandidatoVmGET> GetById(int id);
 
         public Task<Candidato> Create(CandidatoVm candidatoRequest);
 

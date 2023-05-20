@@ -52,11 +52,6 @@ namespace Services.Services
             newCandidatoOferta.CandidatoId = candidatoofertaRequest.CandidatoId;
             newCandidatoOferta.OfertaId = candidatoofertaRequest.OfertaId;
 
-           // if (_context.CandidatoOferta == null)
-           //{
-           //    return Problem("Entity set 'MyApiContext.CandidatoOferta'  is null.");
-           //}
-
             _context.CandidatoOferta.Add(newCandidatoOferta);
             await _context.SaveChangesAsync();
 

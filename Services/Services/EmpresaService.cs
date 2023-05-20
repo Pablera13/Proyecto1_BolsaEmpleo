@@ -54,13 +54,36 @@ namespace Services.Services
             return listaEmpresaVmGET;
         }
 
-        public async Task<Empresa> GetById(int id)
+        public async Task<EmpresaVmGET> GetById(int id)
         {
               var empresa = await _context.Empresa
              .Include(c => c.ofertas)
              .FirstOrDefaultAsync(c => c.Id == id);
 
-            return empresa;
+            if (empresa == null)
+            {
+                return null;
+            }
+
+            EmpresaVmGET newEmpresa = new EmpresaVmGET();
+
+            newEmpresa.Id = empresa.Id;
+            newEmpresa.Nombre = empresa.Nombre;
+            newEmpresa.Direccion = empresa.Direccion;
+            newEmpresa.Telefono = empresa.Telefono;
+
+            foreach (Oferta oferta in empresa.ofertas)
+            {
+                OfertaVm newOferta = new OfertaVm();
+                newOferta.Id = oferta.Id;
+                newOferta.Descripcion = oferta.Descripcion;
+                newOferta.EmpresaId = newEmpresa.Id;
+
+                newEmpresa.Ofertas.Add(newOferta);
+
+            }
+
+            return newEmpresa;
         }
         public async Task<Empresa> Create(EmpresaVm empresaRequest)
         {

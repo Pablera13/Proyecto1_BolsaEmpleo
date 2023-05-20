@@ -13,7 +13,7 @@ namespace Services.IServices
     {
         public Task<List<EmpresaVmGET>> GetAll();
 
-        public Task<Empresa> GetById(int id);
+        public Task<EmpresaVmGET> GetById(int id);
 
         public Task<Empresa> Create(EmpresaVm empresaRequest);
 

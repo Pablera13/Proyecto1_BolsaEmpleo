@@ -45,18 +45,6 @@ namespace Proyecto1_BolsaEmpleo.Controllers
             return Ok(candidato);
         }
 
-        [HttpPatch]
-        public async Task<ActionResult<IEnumerable<Candidato>>> Ver_potenciales_candidatos(int id_oferta)
-        {
-            List<CandidatoVmGET> listCandidato = await _candidatoService.Ver_potenciales_candidatos(id_oferta);
-
-            if (listCandidato == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(listCandidato);
-        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCandidato(int id, CandidatoVm candidatoRequest)
